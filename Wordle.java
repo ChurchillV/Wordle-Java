@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Wordle {
@@ -6,31 +7,36 @@ public class Wordle {
         final int WORD_COUNT = 6;
         Scanner scanner = new Scanner(System.in);
 
-        String answer = "APPLE";
-        WordleBoard board = new WordleBoard(WORD_SIZE, WORD_COUNT);
-
-        int turn = 0;
-        boolean gameOver = false;
-        board.printBoard();
-
-        while(!gameOver) {
-            String guess = Game.getInput(WORD_SIZE, scanner);
-            char[] colors = Game.checkAnswer(answer, guess);
-
-            board.setRow(turn, guess, colors);
+        try {     
+            String answer = Game.getRandomWord("./wordList.txt");
+            WordleBoard board = new WordleBoard(WORD_SIZE, WORD_COUNT);
+    
+            int turn = 0;
+            boolean gameOver = false;
             board.printBoard();
-
-            gameOver = Game.isGameOver(answer, guess, turn + 1, WORD_COUNT);
-
-            if(answer.equalsIgnoreCase(guess)) {
-                System.out.println("YOU WIN!!");
-            } else if (turn + 1 == WORD_COUNT) {
-                System.out.println("GAME OVER!\nANSWER WAS: " + answer);
+    
+            while(!gameOver) {
+                String guess = Game.getInput(WORD_SIZE, scanner);
+                char[] colors = Game.checkAnswer(answer, guess);
+    
+                board.setRow(turn, guess, colors);
+                board.printBoard();
+    
+                gameOver = Game.isGameOver(answer, guess, turn + 1, WORD_COUNT);
+    
+                if(answer.equalsIgnoreCase(guess)) {
+                    System.out.println("YOU WIN!!");
+                } else if (turn + 1 == WORD_COUNT) {
+                    System.out.println("GAME OVER!\nANSWER WAS: " + answer);
+                }
+    
+                turn++;
             }
-
-            turn++;
+    
+            scanner.close();
+        } catch (IOException e) {
+            System.err.println("Error reading words from file: " + e.getMessage());
+            e.printStackTrace();
         }
-
-        scanner.close();
     }
 }

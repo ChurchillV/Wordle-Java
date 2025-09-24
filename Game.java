@@ -1,6 +1,24 @@
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
+
+    public static String getRandomWord(String filePath) throws IOException{
+        List<String> words = Files.readAllLines(Paths.get(filePath));
+
+        if(words.isEmpty()) {
+            throw new IOException("Word list is empty");
+        }
+
+        Random random = new Random();
+        return words.get(random.nextInt(words.size())).toUpperCase();
+    }
+
     public static String getInput(int wordSize, Scanner scanner) {
         while (true) {
             System.out.print("Enter your guess: ");
